@@ -1,0 +1,6 @@
+Transcribe audio for court stenographers.
+Use a python backend with MVC components.
+The transcribing python fonction should use the whisper llm model from hugging face transformers.
+The view needs to manage a library of audio files, with upload function and track the transcribe process status.
+The resulting transcribed text should be in simple text format.
+Please implement also the html and js necessary to interact with the backend.
