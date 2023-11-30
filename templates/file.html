@@ -10,26 +10,27 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
           crossorigin="anonymous">
+    <style>
+        /* Custom CSS styles */
+        pre {
+            background-color: #f8f9fa; /* Grey background color */
+            padding: 10px; /* Add some padding for better readability */
+            white-space: pre-wrap; /* Allow line breaks and wrap text */
+        }
+    </style>
 </head>
 <body>
+    <!-- Stenowhisper Header -->
+    <header class="bg-dark text-light text-center py-3">
+        <h1 class="display-4">Stenowhisper</h1>
+        <p class="lead">Transcribing tool for Stenographers</p>
+    </header>
     <div class="container mt-5">
         <h1>File Details</h1>
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">File Information</h5>
                 <dl class="row">
-                    <dt class="col-sm-3">ID:</dt>
-                    <dd class="col-sm-9">{{ file.id }}</dd>
-
-                    <dt class="col-sm-3">Name:</dt>
-                    <dd class="col-sm-9">{{ file.name }}</dd>
-
-                    <dt class="col-sm-3">Transcription Status:</dt>
-                    <dd class="col-sm-9">{{ file.transcription_status or 'Not Transcribed' }}</dd>
-
-                    <dt class="col-sm-3">Transcription Text:</dt>
-                    <dd class="col-sm-9">{{ file.transcription_text or 'N/A' }}</dd>
-
                     <dt class="col-sm-3">Action:</dt>
                     <dd class="col-sm-9">
                         {% if file.transcription_status != 'Transcribed' %}
@@ -39,8 +40,24 @@
                             </form>
                         {% endif %}
                     </dd>
+
+                    <dt class="col-sm-3">ID:</dt>
+                    <dd class="col-sm-9">{{ file.id }}</dd>
+
+                    <dt class="col-sm-3">Name:</dt>
+                    <dd class="col-sm-9">{{ file.name }}</dd>
+
+                    <dt class="col-sm-3">Path:</dt>
+                    <dd class="col-sm-9">{{ file.file_path }}</dd>
+
+                    <dt class="col-sm-3">Transcription Status:</dt>
+                    <dd class="col-sm-9">{{ file.transcription_status or 'Not Transcribed' }}</dd>
+
+                    <dt class="col-sm-3">Transcription Text:</dt>
+                    <dd class="col-sm-9">
+                        <pre>{{ file.transcription_text or 'N/A' }}</pre>
+                    </dd>
                 </dl>
-                <a href="/" class="btn btn-primary">Back to File List</a>
             </div>
         </div>
     </div>

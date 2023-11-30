@@ -1,29 +1,30 @@
 from transformers import pipeline
-import subprocess
+import ffmpeg
 from pathlib import Path
+import os
 from database import Database
-from pydub import AudioSegment
+
 
 class Transcriber:
     def __init__(self):
         self.database = Database()
         self.database.create_tables()
         # load model and processor
-        #processor = WhisperProcessor.from_pretrained("openai/whisper-small")
-        #model = WhisperForConditionalGeneration.from_pretrained("openai/whisper-small")
-        #forced_decoder_ids = processor.get_decoder_prompt_ids(language="french", task="transcribe")
+        # processor = WhisperProcessor.from_pretrained("openai/whisper-small")
+        # model = WhisperForConditionalGeneration.from_pretrained("openai/whisper-small")
+        # forced_decoder_ids = processor.get_decoder_prompt_ids(language="french", task="transcribe")
 
-        self.transcriber = pipeline("automatic-speech-recognition", model="openai/whisper-small")
+        self.transcriber = pipeline("automatic-speech-recognition", chunk_length_s=10, stride_length_s=(4,2), return_timestamps=True, model="openai/whisper-medium")
 
     def _convert_to_wav(self, audio_file):
-        temp_dir = Path("/tmp")
-        wav_path = temp_dir / "audio.wav"
+        temp = Path(__file__).parent.absolute()
+        wav_path = os.path.join(temp, 'temp', 'audio.wav')
+
         if audio_file.file_path.endswith(".wav"):
             return audio_file.file_path
         
-        original = AudioSegment.from_file(audio_file.file_path)
-        converted = original.set_frame_rate(16000).set_channels(1)
-        converted.export(wav_path, format="wav")
+        print(audio_file.file_path, wav_path)
+        ffmpeg.input(audio_file.file_path, hide_banner=None, y=None).output(wav_path, ar=16000, ac=1, loglevel='error').run(overwrite_output=True)
 
         return str(wav_path)
 
@@ -32,25 +33,11 @@ class Transcriber:
         wav_file = self._convert_to_wav(audio_file)
 
         # Transcribe the audio file using the Whisper LLM model
-        transcription = self.transcriber(audio_file.file_path, generate_kwargs={"language": "french"})["text"]
+        transcription = self.transcriber(wav_file, batch_size=8, return_timestamps=True, generate_kwargs={"language": "french"})
         print(transcription)
-        # load streaming dataset and read first audio sample
-        #ds = audio_file.file_path
-        #ds = ds.cast_column("audio", Audio(sampling_rate=16_000))
-        #input_speech = next(iter(ds))["audio"]
-        #input_features = self.processor(audio_file.file_path, sampling_rate=16_000, return_tensors="pt").input_features
-
-        # generate token ids
-        #predicted_ids = self.model.generate(input_features, forced_decoder_ids=self.forced_decoder_ids)
-        # decode token ids to text
-        #transcription = self.processor.batch_decode(predicted_ids)
-        #['<|startoftranscript|><|fr|><|transcribe|><|notimestamps|> Un vrai travail intéressant va enfin être mené sur ce sujet.<|endoftext|>']
-
-        #transcription = self.processor.batch_decode(predicted_ids, skip_special_tokens=True)
-
         # Update the audio file with the transcription text and status
-        self.set_transcription_text(audio_file, transcription)
-        self.set_transcription_status(audio_file,"Transcribed")
+        self.set_transcription_text(audio_file, transcription['text'])
+        self.set_transcription_status(audio_file, "Transcribed")
 
     def set_transcription_text(self, audio_file, transcription_text):
         audio_file.transcription_text = transcription_text

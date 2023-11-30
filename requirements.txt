@@ -1,4 +1,4 @@
 Flask
 transformers
-ffmpeg
-pydub
+ffmpeg-python
+torch

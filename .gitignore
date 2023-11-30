@@ -163,3 +163,8 @@ test.wav
 .gpteng/
 future-prompt
 .gitignore
+database.db
+audiofiles/*
+temp/audio.wav
+database.db
+database.db

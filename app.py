@@ -2,9 +2,9 @@ import os
 from flask import Flask, render_template, request, jsonify, redirect
 from models import AudioFile, AudioLibrary, TranscriptionView
 from werkzeug.utils import secure_filename
-import json
-
-UPLOAD_FOLDER = './audiofiles' 
+from pathlib import Path
+ROOT_FOLDER = Path(__file__).parent.absolute()
+UPLOAD_FOLDER = 'audiofiles' 
 
 app = Flask(__name__)
 audio_library = AudioLibrary()
@@ -32,7 +32,8 @@ def upload():
     if 'audio_file' in request.files:
         file = request.files['audio_file'] 
         filename = secure_filename(file.filename)
-        file_path = os.path.join(UPLOAD_FOLDER, filename)
+        file_path = os.path.join(ROOT_FOLDER, UPLOAD_FOLDER, filename)
+        print(ROOT_FOLDER, UPLOAD_FOLDER, file_path)
         file.save(file_path)
 
         file_name = os.path.splitext(filename)[0]
@@ -40,16 +41,19 @@ def upload():
         audio_file = AudioFile(0, file_name, file_path)
         audio_library.add_audio_file(audio_file)
 
-    return redirect('/')
+        files = audio_library.get_all_audio_files()
+
+    return redirect('/file/'+str(files[-1].id))
 
 @app.route('/transcribe', methods=['POST'])
 def transcribe():
     id = request.form['file-id']
-    print(id)
+ 
     audio_file = audio_library.get_audio_file(id)
 
     if audio_file:
         transcription_view.transcribe_audio_file(audio_file)
+        return redirect('/file/'+str(audio_file.id))
     return redirect('/')
 
 @app.route('/stop_transcription', methods=['POST'])

@@ -10,22 +10,39 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
           crossorigin="anonymous">
+    <style>
+        form {
+                float:left;
+            }
+        button {
+            margin-right: 5px;
+        }
+    </style>
 </head>
 <body>
+    <!-- Stenowhisper Header -->
+    <header class="bg-dark text-light text-center py-3">
+        <h1 class="display-4">Stenowhisper</h1>
+        <p class="lead">Transcribing tool for Stenographers</p>
+    </header>
+
     <div class="container mt-5">
-        <div id="upload-form" class="container mt-5">
-            <h2>Upload Audio File</h2>
-            <form id="upload-file-form" action="/upload" method="post" enctype="multipart/form-data">
-                <div class="form-group">
-                    <label for="audio_file">Choose Audio File:</label>
-                    <input type="file" class="form-control-file" id="audio_file" name="audio_file">
+        <!-- Upload Audio File Form -->
+        <h4 class="text-left mb-2">Upload Audio File</h4>
+        <form id="upload-file-form" action="/upload" method="post" enctype="multipart/form-data">
+
+            <!-- Compact File Input -->
+            <div class="input-group mb-3">
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="audio_file" name="audio_file" aria-describedby="inputGroupFileAddon">
+                    <label class="custom-file-label" for="audio_file">Choose Audio File</label>
                 </div>
-        
-                <button type="submit" class="btn btn-primary">Upload</button>
-            </form>
-        </div>
-        <hr>
-        <h2>File List</h2>
+                <div class="text-center" style="margin-left: 5px;">
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                </div>
+            </div>
+        </form>
+
         <table class="table table-bordered">
             <thead class="thead-dark">
                 <tr>
@@ -44,12 +61,16 @@
                     <td>
                         {% if file.transcription_status == 'Transcribed' %}
                             <form action="/file/{{ file.id }}" method="get">
-                                <button type="submit" class="btn btn-primary">View Transcription</button>
+                                <button type="submit" class="btn btn-success">View Transcription</button>
+                            </form>
+                            <form action="/transcribe" method="post">
+                                <input type="text" id="transcribe_id" name="file-id" hidden value="{{ file.id }}">
+                                <button type="submit" class="btn btn-secondary">Re-Transcribe</button>
                             </form>
                         {% else %}
                             <form action="/transcribe" method="post">
                                 <input type="text" id="transcribe_id" name="file-id" hidden value="{{ file.id }}">
-                                <button type="submit" class="btn btn-success">Transcribe</button>
+                                <button type="submit" class="btn btn-primary">Transcribe</button>
                             </form>
                         {% endif %}
                     </td>
