@@ -1,9 +1,4 @@
-from audio_library import AudioLibrary
-from transcription_view import TranscriptionView
+from app import app
 
-# Create instances of AudioLibrary and TranscriptionView
-audio_library = AudioLibrary()
-transcription_view = TranscriptionView(audio_library)
-
-# Start the application
-transcription_view.start()
+if __name__ == '__main__':
+    app.run(debug=True)

@@ -6,6 +6,7 @@ source env/bin/activate
 
 # Install the required packages
 pip install transformers
+pip install flask
 
-# Run the main.py file
-python main.py
+# Run the app.py file
+python app.py
