@@ -14,6 +14,7 @@ class AudioFile:
     language: str = ""
     transcription_status: str = "Not Transcribed"
     transcription_text: str = ""
+    transcription_chunks: str = ""
 
 class Database:
     def create_tables(self):
@@ -30,7 +31,8 @@ class Database:
                     lawyers TEXT,
                     language TEXT,
                     transcription_status TEXT,
-                    transcription_text TEXT
+                    transcription_text TEXT,
+                    transcription_chunks TEXT
                 )
             ''')
             self.connection.commit()
@@ -71,7 +73,8 @@ class Database:
                     lawyers= row['lawyers'],
                     language = row['language'],
                     transcription_status = row['transcription_status'],
-                    transcription_text = row['transcription_text']
+                    transcription_text = row['transcription_text'],
+                    transcription_chunks = row['transcription_chunks']
                 )
                 self.connection.close() 
                 return audio_file
@@ -97,7 +100,8 @@ class Database:
                     lawyers= row['lawyers'],
                     language = row['language'],
                     transcription_status = row['transcription_status'],
-                    transcription_text = row['transcription_text']
+                    transcription_text = row['transcription_text'],
+                    transcription_chunks = row['transcription_chunks']
                 )
                 audio_files.append(audio_file)
                 self.connection.close() 
@@ -115,7 +119,8 @@ class Database:
                 lawyers = ?,
                 language = ?,
                 transcription_status = ?,
-                transcription_text = ?
+                transcription_text = ?,
+                transcription_chunks = ?
                 WHERE id = ?
             ''', (
                 audio_file.recorded_date,
@@ -124,6 +129,7 @@ class Database:
                 audio_file.language,
                 audio_file.transcription_status,
                 audio_file.transcription_text,
+                audio_file.transcription_chunks,
                 audio_file.id
             ))
             self.connection.commit()

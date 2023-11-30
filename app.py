@@ -3,6 +3,9 @@ from flask import Flask, render_template, request, jsonify, redirect
 from models import AudioFile, AudioLibrary, TranscriptionView
 from werkzeug.utils import secure_filename
 from pathlib import Path
+import subprocess
+import sys
+import json
 ROOT_FOLDER = Path(__file__).parent.absolute()
 UPLOAD_FOLDER = 'audiofiles' 
 
@@ -52,7 +55,11 @@ def transcribe():
     audio_file = audio_library.get_audio_file(id)
 
     if audio_file:
-        transcription_view.transcribe_audio_file(audio_file)
+        audio_file.transcription_status = 'in progress'
+        audio_library.update_audio_file(audio_file)
+        #transcription_view.transcribe_audio_file(audio_file)
+        subprocess.Popen([sys.executable,  os.path.join(ROOT_FOLDER,'transcription.py'), str(audio_file.id)])
+
         return redirect('/file/'+str(audio_file.id))
     return redirect('/')
 
@@ -89,7 +96,8 @@ def view_transcription(id):
                 'name': audio_file.file_name, 
                 'file_path': audio_file.file_path, 
                 'transcription_status': audio_file.transcription_status, 
-                'transcription_text': audio_file.transcription_text
+                'transcription_text': audio_file.transcription_text,
+                'transcription_chunks': json.loads(audio_file.transcription_chunks)
                 }
         return render_template('file.html', file=file)
 

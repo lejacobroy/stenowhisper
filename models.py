@@ -15,7 +15,8 @@ class AudioLibrary:
     def add_audio_file(self, audio_file):
         print(audio_file.file_name, audio_file.file_path)
         self.database.insert_audio_file(audio_file)
-
+    def update_audio_file(self, audio_file):
+        self.database.update_audio_file(audio_file)
     def get_audio_file(self, id):
         return self.database.get_audio_file(id)
 

@@ -57,6 +57,16 @@
                     <dd class="col-sm-9">
                         <pre>{{ file.transcription_text or 'N/A' }}</pre>
                     </dd>
+
+                    <dt class="col-sm-3">Transcription Chunks:</dt>
+                    <dd class="col-sm-9">
+                        {% for chunk in file.transcription_chunks %}
+                            <div class="chunk">
+                                <p><strong>Timestamp:</strong> {{ chunk.timestamp }}</p>
+                                <p><strong>Text:</strong> {{ chunk.text }}</p>
+                            </div>
+                        {% endfor %}
+                    </dd>
                 </dl>
             </div>
         </div>
