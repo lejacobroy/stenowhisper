@@ -2,3 +2,11 @@ Flask
 transformers
 ffmpeg-python
 torch
+pyannote.audio
+webvtt-py
+pysrt
+dotenv
+torchvision
+torchaudio
+numpy
+faster_whisper

@@ -14,7 +14,7 @@ class AudioFile:
     language: str = ""
     transcription_status: str = "Not Transcribed"
     transcription_text: str = ""
-    transcription_chunks: str = ""
+    transcription_chunks: str = "{}"
 
 class Database:
     def create_tables(self):
@@ -76,6 +76,8 @@ class Database:
                     transcription_text = row['transcription_text'],
                     transcription_chunks = row['transcription_chunks']
                 )
+                if(audio_file.transcription_chunks is None):
+                    audio_file.transcription_chunks = "{}"
                 self.connection.close() 
                 return audio_file
         return None

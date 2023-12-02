@@ -67,10 +67,14 @@
                                 <input type="text" id="transcribe_id" name="file-id" hidden value="{{ file.id }}">
                                 <button type="submit" class="btn btn-secondary">Re-Transcribe</button>
                             </form>
-                        {% else %}
+                        {% elif file.transcription_status == 'Not Transcribed'  %}
                             <form action="/transcribe" method="post">
                                 <input type="text" id="transcribe_id" name="file-id" hidden value="{{ file.id }}">
                                 <button type="submit" class="btn btn-primary">Transcribe</button>
+                            </form>
+                        {% else %}
+                            <form action="/file/{{ file.id }}" method="get">
+                                <button type="submit" class="btn btn-primary">View informations</button>
                             </form>
                         {% endif %}
                     </td>

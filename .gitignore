@@ -165,6 +165,5 @@ future-prompt
 .gitignore
 database.db
 audiofiles/*
-temp/audio.wav
-database.db
-database.db
+temp/*
+test.html

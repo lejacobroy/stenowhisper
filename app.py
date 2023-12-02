@@ -17,9 +17,7 @@ transcription_view = TranscriptionView(audio_library)
 def display_files():
     audio_files = audio_library.get_all_audio_files()
     files = []
-    if not audio_files:
-        return render_template('index.html', files=files)
-    else:
+    if audio_files:
         for audio_file in audio_files:
             files.append({
                 'id': audio_file.id, 
@@ -28,7 +26,7 @@ def display_files():
                 'transcription_status': audio_file.transcription_status, 
                 'transcription_text': audio_file.transcription_text
                 })
-        return render_template('index.html', files=files)
+    return render_template('index.html', files=files)
 
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -60,7 +58,7 @@ def transcribe():
         #transcription_view.transcribe_audio_file(audio_file)
         subprocess.Popen([sys.executable,  os.path.join(ROOT_FOLDER,'transcription.py'), str(audio_file.id)])
 
-        return redirect('/file/'+str(audio_file.id))
+        #return redirect('/file/'+str(audio_file.id))
     return redirect('/')
 
 @app.route('/stop_transcription', methods=['POST'])
@@ -102,4 +100,4 @@ def view_transcription(id):
         return render_template('file.html', file=file)
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=False, use_reloader=False)
